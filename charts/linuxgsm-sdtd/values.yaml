@@ -20,8 +20,8 @@ serverConfig:
   GameName: My Game
   GameWorld: Navezgane
   GameMode: GameModeSurvival
-  WorldGenSeed: asdf
-  WorldGenSize: 6144
+  WorldGenSeed: asdf          # Only used if GameWorld is set to "RWG"
+  WorldGenSize: 6144          # Only used if GameWorld is set to "RWG"
 
   GameDifficulty: 1
   BlockDamagePlayer: 100
