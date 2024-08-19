@@ -1,3 +1,6 @@
+{{- $uid := "1001" }}
+{{- $gid := "1001" }}
+{{- $lgsmConfigDir := "/config-lgsm" }}
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -27,10 +30,33 @@ spec:
         {{- toYaml . | nindent 8 }}
         {{- end }}
     spec:
+      initContainers:
+      - name: copy-config
+        image: busybox
+        command:
+          - /bin/sh
+          - -exc
+          - |
+            mkdir -p {{ $lgsmConfigDir }}/sdtdserver/
+            cp /sdtdserver.cfg {{ $lgsmConfigDir }}/sdtdserver/sdtdserver.cfg
+            chown -R "{{ $uid }}:{{ $gid }}" "{{ $lgsmConfigDir }}/"
+        volumeMounts:
+        - name: lgsm-config-dir
+          mountPath: "{{ $lgsmConfigDir }}"
+        - name: config
+          mountPath: "/sdtdserver.cfg"
+          subPath: sdtdserver.cfg
       containers:
-      - name: {{ .Chart.Name }}
+      - name: linuxgsm-sdtdserver
         image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
+        env:
+        - name: UID
+          value: "{{ $uid }}"
+        - name: GID
+          value: "{{ $gid }}"
+        - name: LGSM_CONFIG
+          value: "{{ $lgsmConfigDir }}"
         ports:
         - containerPort: 26900
           name: gameport1
@@ -49,14 +75,24 @@ spec:
           mountPath: /data/serverfiles
         - name: save-data
           mountPath: /data/.local/share/7DaysToDie/
+        - name: lgsm-config-dir
+          mountPath: "{{ $lgsmConfigDir }}"
+        - name: config
+          mountPath: /serverconfig.xml
+          subPath: serverconfig.xml
         resources: {} # TODO
       volumes:
+      - name: config
+        configMap:
+          name: {{ include "linuxgsm-sdtd.fullname" . }}
+      - name: lgsm-config-dir
+        emptydir: {}
       - name: server-files
         {{- if .Values.persistence.serverFiles.enabled }}
         persistentVolumeClaim:
           claimName: {{ .Values.persistence.existingClaim | default (include "linuxgsm-sdtd.fullname" .) }}-server-files
         {{- else }}
-        emptyDir: { }
+        emptyDir: {}
         {{- end }}
       - name: save-data
         {{- if .Values.persistence.saveData.enabled }}

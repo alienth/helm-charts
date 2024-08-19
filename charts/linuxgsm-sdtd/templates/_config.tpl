@@ -3,7 +3,7 @@
  */}}
 {{- define "linuxgsm-sdtd.configData" -}}
 {{- $root := . -}}
-serverConfig.xml: |
+serverconfig.xml: |
   <?xml version="1.0"?>
   <ServerSettings>
   {{- range $elem, $elemVal := index .Values "serverConfig" }}
