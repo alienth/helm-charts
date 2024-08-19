@@ -12,6 +12,11 @@ serverConfig:
   ServerAdminSlotsPermission: 0
   EACEnabled: true
 
+  TelnetEnabled: true # required for LGSM to shut things down gracefully.
+  TelnetPort: 8081
+  TelnetPassword: ""
+  TelnetFailedLoginLimit: 10
+
   GameName: My Game
   GameWorld: Navezgane
   GameMode: GameModeSurvival
