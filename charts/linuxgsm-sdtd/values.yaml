@@ -21,7 +21,7 @@ serverConfig:
   GameDifficulty: 1
   BlockDamagePlayer: 100
   BlockDamageAI: 100
-  BlockDamageAIBloodMoon: 100
+  BlockDamageAIBM: 100
   XPMultiplier: 100
   PlayerSafeZoneLevel: 5
   PlayerSafeZoneHours: 5
