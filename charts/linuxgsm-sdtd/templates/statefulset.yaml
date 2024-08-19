@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "linuxgsm-sdtd.fullname" . }}
+  labels:
+    {{- include "linuxgsm-sdtd.labels" . | nindent 4 }}
+  {{- with .Values.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "linuxgsm-sdtd.selectorLabels" . | nindent 6 }}
+  serviceName: {{ include "linuxgsm-sdtd.fullname" . }}
+  template:
+    metadata:
+      labels:
+        {{- include "linuxgsm-sdtd.selectorLabels" . | nindent 8 }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      annotations:
+        kubectl.kubernetes.io/default-container: {{ .Chart.Name }}
+        {{- with .Values.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+        - containerPort: 26900
+          name: gameport1
+          protocol: TCP
+        - containerPort: 26900
+          name: gameport2
+          protocol: UDP
+        - containerPort: 26901
+          name: gameport3
+          protocol: UDP
+        - containerPort: 26902
+          name: gameport4
+          protocol: UDP
+        volumeMounts:
+        - name: server-files
+          mountPath: /data/serverfiles
+        - name: save-data
+          mountPath: /data/.local/share/7DaysToDie/
+        resources: {} # TODO
+      volumes:
+      - name: server-files
+        {{- if .Values.persistence.serverFiles.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ .Values.persistence.existingClaim | default (include "linuxgsm-sdtd.fullname" .) }}-server-files
+        {{- else }}
+        emptyDir: { }
+        {{- end }}
+      - name: save-data
+        {{- if .Values.persistence.saveData.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ .Values.persistence.existingClaim | default (include "linuxgsm-sdtd.fullname" .) }}-save-data
+        {{- else }}
+        emptyDir: { }
+        {{- end }}
+        {{- if .Values.persistence.additionalVolumes }}
+          {{- .Values.persistence.additionalVolumes | toYaml | nindent 8}}
+        {{- end }}
