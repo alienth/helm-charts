@@ -1,6 +1,4 @@
-{{- $uid := "1001" }}
-{{- $gid := "1001" }}
-{{- $lgsmConfigDir := "/config-lgsm" }}
+{{- $lgsmConfigDir := "/data/config-lgsm" }}
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -39,7 +37,6 @@ spec:
           - |
             mkdir -p {{ $lgsmConfigDir }}/sdtdserver/
             cp /sdtdserver.cfg {{ $lgsmConfigDir }}/sdtdserver/sdtdserver.cfg
-            chown -R "{{ $uid }}:{{ $gid }}" "{{ $lgsmConfigDir }}/"
         volumeMounts:
         - name: lgsm-config-dir
           mountPath: "{{ $lgsmConfigDir }}"
@@ -51,10 +48,6 @@ spec:
         image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         env:
-        - name: UID
-          value: "{{ $uid }}"
-        - name: GID
-          value: "{{ $gid }}"
         - name: LGSM_CONFIG
           value: "{{ $lgsmConfigDir }}"
         ports:
