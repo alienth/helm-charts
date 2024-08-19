@@ -1,0 +1,105 @@
+{{- $lgsmConfigDir := "/data/config-lgsm" }}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "linuxgsm-sdtd.fullname" . }}
+  labels:
+    {{- include "linuxgsm-sdtd.labels" . | nindent 4 }}
+  {{- with .Values.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "linuxgsm-sdtd.selectorLabels" . | nindent 6 }}
+  serviceName: {{ include "linuxgsm-sdtd.fullname" . }}
+  template:
+    metadata:
+      labels:
+        {{- include "linuxgsm-sdtd.selectorLabels" . | nindent 8 }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+        app: {{ include "linuxgsm-sdtd.fullname" . }}
+      annotations:
+        kubectl.kubernetes.io/default-container: linuxgsm-sdtdserver
+        {{- with .Values.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      initContainers:
+      - name: copy-config
+        image: busybox
+        command:
+          - /bin/sh
+          - -exc
+          - |
+            mkdir -p {{ $lgsmConfigDir }}/sdtdserver/
+            cp /sdtdserver.cfg {{ $lgsmConfigDir }}/sdtdserver/sdtdserver.cfg
+        volumeMounts:
+        - name: lgsm-config-dir
+          mountPath: "{{ $lgsmConfigDir }}"
+        - name: config
+          mountPath: "/sdtdserver.cfg"
+          subPath: sdtdserver.cfg
+      containers:
+      - name: linuxgsm-sdtdserver
+        image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        env:
+        - name: LGSM_CONFIG
+          value: "{{ $lgsmConfigDir }}"
+        ports:
+        - containerPort: 26900
+          name: gameport1
+          protocol: TCP
+        - containerPort: 26900
+          name: gameport2
+          protocol: UDP
+        - containerPort: 26901
+          name: gameport3
+          protocol: UDP
+        - containerPort: 26902
+          name: gameport4
+          protocol: UDP
+          {{- if .Values.serverConfig.WebDashboardEnabled }}
+        - containerPort: {{ .Values.serverConfig.WebDashboardPort }}
+          name: dashboard
+          protocol: TCP
+          {{- end }}
+        volumeMounts:
+        - name: server-files
+          mountPath: /data/serverfiles
+        - name: save-data
+          mountPath: "{{ .Values.serverConfig.UserDataFolder}}"
+        - name: lgsm-config-dir
+          mountPath: "{{ $lgsmConfigDir }}"
+        - name: config
+          mountPath: /serverconfig.xml
+          subPath: serverconfig.xml
+        resources: {} # TODO
+      volumes:
+      - name: config
+        configMap:
+          name: {{ include "linuxgsm-sdtd.fullname" . }}
+      - name: lgsm-config-dir
+        emptydir: {}
+      - name: server-files
+        {{- if .Values.persistence.serverFiles.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ .Values.persistence.serverFiles.existingClaim | default (include "linuxgsm-sdtd.fullname" .) }}-server-files
+        {{- else }}
+        emptyDir: {}
+        {{- end }}
+      - name: save-data
+        {{- if .Values.persistence.saveData.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ .Values.persistence.saveData.existingClaim | default (include "linuxgsm-sdtd.fullname" .) }}-save-data
+        {{- else }}
+        emptyDir: { }
+        {{- end }}
+        {{- if .Values.persistence.additionalVolumes }}
+          {{- .Values.persistence.additionalVolumes | toYaml | nindent 8}}
+        {{- end }}
