@@ -15,8 +15,8 @@ spec:
     requests:
       storage: {{ .Values.persistence.serverFiles.size | quote }}
 {{- end }}
----
 {{- if and .Values.persistence.saveData.enabled (not .Values.persistence.saveData.existingClaim) }}
+---
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
@@ -32,4 +32,22 @@ spec:
   resources:
     requests:
       storage: {{ .Values.persistence.saveData.size | quote }}
+{{- end }}
+{{- if and .Values.persistence.backup.enabled (not .Values.persistence.backup.existingClaim) }}
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ include "linuxgsm-sdtd.fullname" . }}-backup
+  labels:
+    {{- include "linuxgsm-sdtd.labels" . | nindent 4 }}
+spec:
+  accessModes:
+  - {{ .Values.persistence.backup.accessMode | quote }}
+  {{- with .Values.persistence.serverFiles.storageClassName }}
+  storageClassName: {{ . }}
+  {{- end }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.backup.size | quote }}
 {{- end }}

@@ -12,6 +12,8 @@ serverConfig:
   ServerAdminSlotsPermission: 0
   EACEnabled: true
 
+  UserDataFolder: /save-data
+
   TelnetEnabled: true # required for LGSM to shut things down gracefully.
   TelnetPort: 8081
   TelnetPassword: ""
@@ -91,6 +93,9 @@ image:
   tag: sdtd
   pullPolicy: IfNotPresent
 
+podLabels: {}
+podAnnotations: {}
+
 persistence:
   # Where the server itself will install and be ran out of
   serverFiles:
@@ -109,4 +114,25 @@ persistence:
     accessMode: ReadWriteOnce
     size: 4Gi
 
+  backup:
+    enabled: false
+    storageClassName: ""
+    existingClaim: ""
+    accessMode: ReadWriteOnce
+    size: 4Gi
+
   additionalVolumes: {}
+
+ingress:
+  # Used for web dashboard
+
+
+backup:
+  image:
+    registry: docker.io
+    repository: alienth/docker-backup-sdtd
+    tag: latest
+    pullPolicy: IfNotPresent
+  enabled: false
+  # Be aware this is in UTC.
+  schedule: "0 13 * * *" # https://en.wikipedia.org/wiki/Cron#Overview
