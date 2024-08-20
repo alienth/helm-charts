@@ -4,6 +4,26 @@ entries:
   - annotations:
       artifacthub.io/changes: |
         - kind: changed
+          description: Pause pod shutdown if update is running.
+      artifacthub.io/links: |
+        - name: Helm Chart repo
+          url: https://github.com/alienth/helm-charts
+        - name: Application
+          url: https://github.com/GameServerManagers/LinuxGSM
+    apiVersion: v2
+    created: "2024-08-20T20:09:24.356583317Z"
+    description: '7DaysToDie server ran in linuxgsm container. '
+    digest: 9361f96142d367a16f2fa1a23965df5f1dbac9f8bba70100cf2381000d94b125
+    keywords:
+    - 7DaysToDie
+    name: linuxgsm-sdtd
+    type: application
+    urls:
+    - https://github.com/alienth/helm-charts/releases/download/linuxgsm-sdtd-0.0.3/linuxgsm-sdtd-0.0.3.tgz
+    version: 0.0.3
+  - annotations:
+      artifacthub.io/changes: |
+        - kind: changed
           description: Initial release
       artifacthub.io/links: |
         - name: Helm Chart repo
@@ -41,4 +61,4 @@ entries:
     urls:
     - https://github.com/alienth/helm-charts/releases/download/linuxgsm-sdtd-0.0.1/linuxgsm-sdtd-0.0.1.tgz
     version: 0.0.1
-generated: "2024-08-20T07:39:34.889616648Z"
+generated: "2024-08-20T20:09:24.356602252Z"
