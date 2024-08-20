@@ -11,6 +11,26 @@ entries:
         - name: Application
           url: https://github.com/GameServerManagers/LinuxGSM
     apiVersion: v2
+    created: "2024-08-20T07:39:34.889604134Z"
+    description: '7DaysToDie server ran in linuxgsm container. '
+    digest: 49a4f63bdc51989e41dff15ae443cb5c4c7319a61a54041756fd9044063ac836
+    keywords:
+    - 7DaysToDie
+    name: linuxgsm-sdtd
+    type: application
+    urls:
+    - https://github.com/alienth/helm-charts/releases/download/linuxgsm-sdtd-0.0.2/linuxgsm-sdtd-0.0.2.tgz
+    version: 0.0.2
+  - annotations:
+      artifacthub.io/changes: |
+        - kind: changed
+          description: Initial release
+      artifacthub.io/links: |
+        - name: Helm Chart repo
+          url: https://github.com/alienth/helm-charts
+        - name: Application
+          url: https://github.com/GameServerManagers/LinuxGSM
+    apiVersion: v2
     created: "2024-08-20T07:30:15.543365113Z"
     description: '7DaysToDie server ran in linuxgsm container. '
     digest: 59ef08032909900a2e944358b5c472e2b38e52cd1c6999b0c8ad42c178da4fad
@@ -21,4 +41,4 @@ entries:
     urls:
     - https://github.com/alienth/helm-charts/releases/download/linuxgsm-sdtd-0.0.1/linuxgsm-sdtd-0.0.1.tgz
     version: 0.0.1
-generated: "2024-08-20T07:30:15.543374881Z"
+generated: "2024-08-20T07:39:34.889616648Z"
