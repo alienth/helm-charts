@@ -85,7 +85,7 @@ spec:
         configMap:
           name: {{ include "linuxgsm-sdtd.fullname" . }}
       - name: lgsm-config-dir
-        emptydir: {}
+        emptyDir: {}
       - name: server-files
         {{- if .Values.persistence.serverFiles.enabled }}
         persistentVolumeClaim:

@@ -3,7 +3,7 @@ name: linuxgsm-sdtd
 description: |
   7DaysToDie server ran in linuxgsm container.
 type: application
-version: 0.0.1
+version: 0.0.2
 keywords:
   - 7DaysToDie
 annotations:

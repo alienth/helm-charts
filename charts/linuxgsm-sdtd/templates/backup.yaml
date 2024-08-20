@@ -8,12 +8,12 @@ metadata:
 spec:
   schedule: "{{ .Values.backup.schedule }}"
   jobTemplate:
+    backoffLimit: 0
     spec:
       template:
         spec:
           serviceAccountName: {{ include "linuxgsm-sdtd.fullname" . }}-backup
           restartPolicy: Never
-          backoffLimit: 0
           containers:
           - name: backup
             image: "{{ .Values.backup.image.registry }}/{{ .Values.backup.image.repository }}:{{ .Values.backup.image.tag | default .Chart.AppVersion }}"
