@@ -80,6 +80,11 @@ spec:
           mountPath: /serverconfig.xml
           subPath: serverconfig.xml
         resources: {} # TODO
+        lifecycle:
+          preStop:
+            exec:
+              command: ["/bin/bash","-c","while [[ -f '/app/lgsm/lock/update.lock' ]]; do echo 'Waiting for update to complete..' > /proc/1/fd/1; sleep 5; done"]
+      terminationGracePeriodSeconds: 900
       volumes:
       - name: config
         configMap:

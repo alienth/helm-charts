@@ -3,13 +3,13 @@ name: linuxgsm-sdtd
 description: |
   7DaysToDie server ran in linuxgsm container.
 type: application
-version: 0.0.2
+version: 0.0.3
 keywords:
   - 7DaysToDie
 annotations:
   artifacthub.io/changes: |
     - kind: changed
-      description: Initial release
+      description: Pause pod shutdown if update is running.
   artifacthub.io/links: |
     - name: Helm Chart repo
       url: https://github.com/alienth/helm-charts
