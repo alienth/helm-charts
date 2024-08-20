@@ -1,0 +1,56 @@
+{{- $root := . }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "linuxgsm-sdtd.fullname" . }}-game
+  {{- with .Values.service.game.annotations }}
+  annotations:
+    {{- tpl (toYaml . | nindent 4) $root }}
+  {{- end }}
+spec:
+  type: {{ .Values.service.game.type }}
+  {{- with .Values.service.game.externalTrafficPolicy }}
+  externalTrafficPolicy: {{ . }}
+  {{- end }}
+  selector:
+    app: {{ include "linuxgsm-sdtd.fullname" . }}
+  ports:
+  - name: gameport1
+    port: 26900
+    protocol: TCP
+    targetPort: gameport1
+  - name: gameport2
+    port: 26900
+    protocol: UDP
+    targetPort: gameport2
+  - name: gameport3
+    port: 26901
+    protocol: UDP
+    targetPort: gameport3
+  - name: gameport4
+    port: 26902
+    protocol: UDP
+    targetPort: gameport4
+{{- if .Values.serverConfig.WebDashboardEnabled }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "linuxgsm-sdtd.fullname" . }}-dashboard
+  {{- with .Values.service.dashboard.annotations }}
+  annotations:
+    {{- tpl (toYaml . | nindent 4) $root }}
+  {{- end }}
+spec:
+  type: {{ .Values.service.dashboard.type }}
+  {{- with .Values.service.dashboard.externalTrafficPolicy }}
+  externalTrafficPolicy: {{ . }}
+  {{- end }}
+  selector:
+    app: {{ include "linuxgsm-sdtd.fullname" . }}
+  ports:
+  - name: dashboard
+    port: {{ .Values.service.dashboard.port }}
+    protocol: TCP
+    targetPort: dashboard
+{{- end }}

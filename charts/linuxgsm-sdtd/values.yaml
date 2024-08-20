@@ -14,6 +14,11 @@ serverConfig:
 
   UserDataFolder: /save-data
 
+  WebDashboardEnabled: false
+  WebDashboardPort: 8080
+  WebDashboardUrl: ""
+  EnableMapRendering: false
+
   TelnetEnabled: true # required for LGSM to shut things down gracefully.
   TelnetPort: 8081
   TelnetPassword: ""
@@ -123,8 +128,26 @@ persistence:
 
   additionalVolumes: {}
 
+service:
+  game:
+    type: ClusterIP
+    annotations: {}
+
+  # requires serverConfig.WebDashboardEnabled
+  dashboard:
+    type: ClusterIP
+    port: 8080
+    annotations: {}
+
+# Used for the web dashboard
 ingress:
-  # Used for web dashboard
+  enabled: false
+  annotations: {}
+  path: /
+  pathType: Prefix
+  ingressClassName: ""
+  hosts:
+    - chart-example.local
 
 
 backup:

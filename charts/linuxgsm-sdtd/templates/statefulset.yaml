@@ -64,6 +64,11 @@ spec:
         - containerPort: 26902
           name: gameport4
           protocol: UDP
+          {{- if .Values.serverConfig.WebDashboardEnabled }}
+        - containerPort: {{ .Values.serverConfig.WebDashboardPort }}
+          name: dashboard
+          protocol: TCP
+          {{- end }}
         volumeMounts:
         - name: server-files
           mountPath: /data/serverfiles
