@@ -128,11 +128,11 @@ ingress:
 
 
 backup:
+  enabled: false
   image:
     registry: docker.io
     repository: alienth/docker-backup-sdtd
     tag: latest
     pullPolicy: IfNotPresent
-  enabled: false
   # Be aware this is in UTC.
   schedule: "0 13 * * *" # https://en.wikipedia.org/wiki/Cron#Overview

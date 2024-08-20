@@ -1,0 +1,70 @@
+{{- if and .Values.backup.enabled (and .Values.persistence.saveData.enabled) }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ include "linuxgsm-sdtd.fullname" . }}-backup
+  labels:
+    {{- include "linuxgsm-sdtd.labels" . | nindent 4 }}
+spec:
+  schedule: "{{ .Values.backup.schedule }}"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: {{ include "linuxgsm-sdtd.fullname" . }}-backup
+          restartPolicy: Never
+          backoffLimit: 0
+          containers:
+          - name: backup
+            image: "{{ .Values.backup.image.registry }}/{{ .Values.backup.image.repository }}:{{ .Values.backup.image.tag | default .Chart.AppVersion }}"
+            imagePullPolicy: {{ .Values.backup.image.pullPolicy }}
+            args:
+            - '{{ include "linuxgsm-sdtd.fullname" . }}'
+            env:
+            - name: SAVE_DIR
+              value: "/save-data"
+            - name: BACKUP_DIR
+              value: "/backup"
+            volumeMounts:
+            - name: save-data
+              mountPath: "/save-data"
+            - name: backup
+              mountPath: "/backup"
+          volumes:
+          - name: save-data
+            persistentVolumeClaim:
+              claimName: {{ .Values.persistence.saveData.existingClaim | default (include "linuxgsm-sdtd.fullname" .) }}-save-data
+          - name: backup
+            persistentVolumeClaim:
+              claimName: {{ .Values.persistence.backup.existingClaim | default (include "linuxgsm-sdtd.fullname" .) }}-backup
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ include "linuxgsm-sdtd.fullname" . }}-backup
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: {{ include "linuxgsm-sdtd.fullname" . }}-backup
+rules:
+  - apiGroups: ["apps"]
+    resources: ["statefulsets"]
+    verbs: ["get", "list"]
+  - apiGroups: ["apps"]
+    resources: ["statefulsets/scale"]
+    verbs: ["patch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: {{ include "linuxgsm-sdtd.fullname" . }}-backup
+subjects:
+  - kind: ServiceAccount
+    name: {{ include "linuxgsm-sdtd.fullname" . }}-backup
+    namespace: {{ .Release.Namespace }}
+roleRef:
+  kind: Role
+  name: {{ include "linuxgsm-sdtd.fullname" . }}-backup
+  apiGroup: rbac.authorization.k8s.io
+{{- end }}
