@@ -9,6 +9,37 @@ entries:
           image: docker.io/linuxserver/jellyfin:10.7.7
       artifacthub.io/license: MIT
     apiVersion: v2
+    appVersion: 10.9.8
+    created: "2024-08-25T20:00:10.009779793Z"
+    description: Jellyfin Helm chart
+    digest: 2f7ec905f46a71c5c3e0858997185fcf0d7226814cd7df2bdb48e8fa61d7c469
+    home: https://jellyfin.org
+    keywords:
+    - jellyfin
+    - media-server
+    - streaming
+    - tv
+    - video
+    - kodi
+    maintainers:
+    - email: alienth@gmail.com
+      name: Jason Harvey
+    name: jellyfin
+    sources:
+    - https://github.com/linuxserver/docker-jellyfin
+    - https://github.com/alienth/helm-charts
+    type: application
+    urls:
+    - https://github.com/alienth/helm-charts/releases/download/jellyfin-2.0.2/jellyfin-2.0.2.tgz
+    version: 2.0.2
+  - annotations:
+      artifacthub.io/changes: |
+        - Complete rewrite
+      artifacthub.io/images: |
+        - name: linuxserver/jellyfin
+          image: docker.io/linuxserver/jellyfin:10.7.7
+      artifacthub.io/license: MIT
+    apiVersion: v2
     appVersion: 10.7.7
     created: "2024-08-25T10:12:22.999517808Z"
     description: Jellyfin Helm chart
@@ -93,4 +124,4 @@ entries:
     urls:
     - https://github.com/alienth/helm-charts/releases/download/linuxgsm-sdtd-0.0.1/linuxgsm-sdtd-0.0.1.tgz
     version: 0.0.1
-generated: "2024-08-25T10:12:22.999529911Z"
+generated: "2024-08-25T20:00:10.009796805Z"
