@@ -3,7 +3,7 @@ name: jellyfin
 description: Jellyfin Helm chart
 type: application
 version: 2.0.1
-appVersion: 10.7.7
+appVersion: 10.9.8
 home: https://jellyfin.org
 keywords:
   - jellyfin
