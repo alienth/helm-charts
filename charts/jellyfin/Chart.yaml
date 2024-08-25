@@ -2,7 +2,7 @@ apiVersion: v2
 name: jellyfin
 description: Jellyfin Helm chart
 type: application
-version: 2.0.1
+version: 2.0.2
 appVersion: 10.9.8
 home: https://jellyfin.org
 keywords:
