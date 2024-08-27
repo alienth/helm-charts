@@ -67,6 +67,26 @@ entries:
   - annotations:
       artifacthub.io/changes: |
         - kind: changed
+          description: Load server passwords in via Secret.
+      artifacthub.io/links: |
+        - name: Helm Chart repo
+          url: https://github.com/alienth/helm-charts
+        - name: Application
+          url: https://github.com/GameServerManagers/LinuxGSM
+    apiVersion: v2
+    created: "2024-08-27T02:22:54.870423995Z"
+    description: '7DaysToDie server ran in linuxgsm container. '
+    digest: 8abecfbbe30c945c9bea865dba084352fd2c403ad9b70ef31349c65aa9ad9367
+    keywords:
+    - 7DaysToDie
+    name: linuxgsm-sdtd
+    type: application
+    urls:
+    - https://github.com/alienth/helm-charts/releases/download/linuxgsm-sdtd-0.0.4/linuxgsm-sdtd-0.0.4.tgz
+    version: 0.0.4
+  - annotations:
+      artifacthub.io/changes: |
+        - kind: changed
           description: Pause pod shutdown if update is running.
       artifacthub.io/links: |
         - name: Helm Chart repo
@@ -124,4 +144,4 @@ entries:
     urls:
     - https://github.com/alienth/helm-charts/releases/download/linuxgsm-sdtd-0.0.1/linuxgsm-sdtd-0.0.1.tgz
     version: 0.0.1
-generated: "2024-08-25T20:00:10.009796805Z"
+generated: "2024-08-27T02:22:54.870466735Z"
