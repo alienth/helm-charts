@@ -3,7 +3,6 @@ serverConfig:
 
   ServerName: My Game Host
   ServerDescription: A 7 Days to Die server
-  ServerPassword: ""
   # 2 = public, 1 = friends-only, 0 = not listed
   ServerVisibility: 0
   ServerMaxPlayerCount: 8
@@ -11,6 +10,12 @@ serverConfig:
   ServerAdminSlots: 0
   ServerAdminSlotsPermission: 0
   EACEnabled: true
+
+  # To avoid setting these in values, instead edit the Secret this helm chart
+  # will create and add these properties there.
+  # See templates/secret.yaml
+  # ServerPassword: ""
+  # TelnetPassword: ""
 
   UserDataFolder: /save-data
 
@@ -21,7 +26,6 @@ serverConfig:
 
   TelnetEnabled: true # required for LGSM to shut things down gracefully.
   TelnetPort: 8081
-  TelnetPassword: ""
   TelnetFailedLoginLimit: 10
 
   GameName: My Game

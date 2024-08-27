@@ -30,20 +30,27 @@ spec:
         {{- end }}
     spec:
       initContainers:
-      - name: copy-config
+      - name: setup-config
         image: busybox
         command:
           - /bin/sh
           - -exc
           - |
             mkdir -p {{ $lgsmConfigDir }}/sdtdserver/
-            cp /sdtdserver.cfg {{ $lgsmConfigDir }}/sdtdserver/sdtdserver.cfg
+            cp /config/sdtdserver.cfg {{ $lgsmConfigDir }}/sdtdserver/sdtdserver.cfg
+            cp /config/serverconfig.xml /rendered-config/serverconfig.xml
+            sed -i '/<!--INJECT_SECRETS_HERE-->/{
+              r /server-config-secrets/secrets.xml
+            }' /rendered-config/serverconfig.xml
         volumeMounts:
         - name: lgsm-config-dir
           mountPath: "{{ $lgsmConfigDir }}"
         - name: config
-          mountPath: "/sdtdserver.cfg"
-          subPath: sdtdserver.cfg
+          mountPath: "/config"
+        - name: rendered-config
+          mountPath: "/rendered-config"
+        - name: server-config-secrets
+          mountPath: "/server-config-secrets"
       containers:
       - name: linuxgsm-sdtdserver
         image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
@@ -76,9 +83,8 @@ spec:
           mountPath: "{{ .Values.serverConfig.UserDataFolder}}"
         - name: lgsm-config-dir
           mountPath: "{{ $lgsmConfigDir }}"
-        - name: config
-          mountPath: /serverconfig.xml
-          subPath: serverconfig.xml
+        - name: rendered-config
+          mountPath: "/rendered-config"
         resources: {} # TODO
         lifecycle:
           preStop:
@@ -89,6 +95,12 @@ spec:
       - name: config
         configMap:
           name: {{ include "linuxgsm-sdtd.fullname" . }}
+      - name: server-config-secrets
+        secret:
+          secretName: server-config-secrets
+          secretName: {{ include "linuxgsm-sdtd.fullname" . }}-serverconfig
+      - name: rendered-config
+        emptyDir: {}
       - name: lgsm-config-dir
         emptyDir: {}
       - name: server-files

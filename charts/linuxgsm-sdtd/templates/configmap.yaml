@@ -7,4 +7,4 @@ metadata:
 data:
   {{- include "linuxgsm-sdtd.configData" . | nindent 2 }}
   sdtdserver.cfg: |
-    startparameters="-quit -batchmode -nographics -dedicated -configfile=/serverconfig.xml"
+    startparameters="-quit -batchmode -nographics -dedicated -configfile=/rendered-config/serverconfig.xml"
