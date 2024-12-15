@@ -1,0 +1,143 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "atuin.fullname" . }}
+  labels:
+    {{- include "atuin.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "atuin.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "atuin.labels" . | nindent 8 }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "atuin.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          args: ["server", "start"]
+          env:
+            - name: ATUIN_HOST
+              value: 0.0.0.0
+            - name: ATUIN_PORT
+              value: "{{ .Values.service.port }}"
+
+            - name: ATUIN_LOG
+              value: {{ .Values.atuin.logLevel }}
+
+            - name: ATUIN_OPEN_REGISTRATION
+              value: "{{ .Values.atuin.openRegistration }}"
+            - name: ATUIN_MAX_HISTORY_LENGTH
+              value: "{{ .Values.atuin.maxHistoryLength }}"
+            - name: ATUIN_MAX_RECORD_SIZE
+              value: "{{ .Values.atuin.maxRecordSize }}"
+            - name: ATUIN_PAGE_SIZE
+              value: "{{ .Values.atuin.pageSize }}"
+            - name: ATUIN_DB_URI
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.postgresql.uri.secretName }}
+                  key: {{ .Values.postgresql.uri.secretKey }}
+            - name: ATUIN_TLS__ENABLE
+              value: "false"
+            - name: ATUIN_TLS__CERT_PATH
+              value: ""
+            - name: ATUIN_TLS__PKEY_PATH
+              value: ""
+
+            {{- if .Values.atuin.fake_version }}
+            - name: ATUIN_FAKE_VERSION
+              value: {{ .Values.atuin.fake_version }}
+            {{- end }}
+
+            {{- if .Values.atuin.hooks.enabled }}
+            - name: ATUIN_REGISTER_WEBHOOK_URL
+              value: {{ .Values.atuin.hooks.url }}
+            - name: ATUIN_REGISTER_WEBHOOK_USERNAME
+              value: {{ .Values.atuin.hooks.username }}
+            {{- end }}
+
+            {{- if .Values.atuin.metrics.enabled }}
+            - name: ATUIN_METRICS__ENABLE
+              value: "true"
+            - name: ATUIN_METRICS__HOST
+              value: {{ .Values.atuin.metrics.host }}
+            - name: ATUIN_METRICS__PORT
+              value: "{{ .Values.atuin.metrics.port}}"
+            {{- end }}
+
+            {{- if .Values.atuin.mail.enabled }}
+            - name: ATUIN_MAIL__ENABLED
+              value: "true"
+
+            {{- if .Values.atuin.mail.postmark.token}}
+            - name: ATUIN_MAIL__POSTMARK__TOKEN
+              value: {{ .Values.atuin.mail.postmark.token }}
+            {{- end }}
+
+            - name: ATUIN_MAIL__VERIFICATION__FROM
+              value: "{{ .Values.atuin.mail.verification.from }}"
+
+            - name: ATUIN_MAIL__VERIFICATION__SUBJECT
+              value: "{{ .Values.atuin.mail.verification.subject }}"
+            {{- end }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
+            {{- if .Values.atuin.metrics.enabled }}
+            - name: metrics
+              containerPort: {{ .Values.atuin.metrics.port }}
+              protocol: TCP
+            {{- end }}
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          {{- with .Values.volumeMounts }}
+          volumeMounts:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+      {{- with .Values.volumes }}
+      volumes:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
