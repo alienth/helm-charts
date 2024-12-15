@@ -1,5 +1,20 @@
 apiVersion: v1
 entries:
+  atuin:
+  - apiVersion: v2
+    appVersion: 18.3.0
+    created: "2024-12-15T13:34:54.198319443Z"
+    description: A Helm chart for Atuin, the shell sync tool
+    digest: a62f609cd230b9f1d90ab20d2962e204eab7be4afc09b5374d4b72cbb344f743
+    maintainers:
+    - email: ellie@atuin.sh
+      name: Ellie Huxtable
+      url: https://ellie.wtf
+    name: atuin
+    type: application
+    urls:
+    - https://github.com/alienth/helm-charts/releases/download/atuin-0.4.1/atuin-0.4.1.tgz
+    version: 0.4.1
   jellyfin:
   - annotations:
       artifacthub.io/changes: |
@@ -144,4 +159,4 @@ entries:
     urls:
     - https://github.com/alienth/helm-charts/releases/download/linuxgsm-sdtd-0.0.1/linuxgsm-sdtd-0.0.1.tgz
     version: 0.0.1
-generated: "2024-08-27T02:22:54.870466735Z"
+generated: "2024-12-15T13:34:54.198336666Z"
