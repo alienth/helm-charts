@@ -78,6 +78,27 @@ entries:
     urls:
     - https://github.com/alienth/helm-charts/releases/download/jellyfin-2.0.1/jellyfin-2.0.1.tgz
     version: 2.0.1
+  librechat:
+  - apiVersion: v2
+    appVersion: v0.7.8
+    created: "2025-06-08T07:34:24.474067684Z"
+    dependencies:
+    - condition: mongodb.enabled
+      name: mongodb
+      repository: https://charts.bitnami.com/bitnami
+      version: 16.3.0
+    - condition: meilisearch.enabled
+      name: meilisearch
+      repository: https://meilisearch.github.io/meilisearch-kubernetes
+      version: 0.11.0
+    description: A Helm chart for LibreChat
+    digest: c7b625574925e9f3765e4fa6a1366da6ca801aa67dbee4ff83baf3d00e6ae1b9
+    home: https://www.librechat.ai
+    name: librechat
+    type: application
+    urls:
+    - https://github.com/alienth/helm-charts/releases/download/librechat-1.8.9/librechat-1.8.9.tgz
+    version: 1.8.9
   linuxgsm-sdtd:
   - annotations:
       artifacthub.io/changes: |
@@ -159,4 +180,4 @@ entries:
     urls:
     - https://github.com/alienth/helm-charts/releases/download/linuxgsm-sdtd-0.0.1/linuxgsm-sdtd-0.0.1.tgz
     version: 0.0.1
-generated: "2024-12-15T13:34:54.198336666Z"
+generated: "2025-06-08T07:34:24.474082382Z"
