@@ -81,6 +81,27 @@ entries:
   librechat:
   - apiVersion: v2
     appVersion: v0.8.3-rc1
+    created: "2026-02-24T06:00:51.788807204Z"
+    dependencies:
+    - condition: mongodb.enabled
+      name: mongodb
+      repository: https://charts.bitnami.com/bitnami
+      version: 16.3.0
+    - condition: meilisearch.enabled
+      name: meilisearch
+      repository: https://meilisearch.github.io/meilisearch-kubernetes
+      version: 0.11.0
+    description: A Helm chart for LibreChat
+    digest: ab02d6034cb1305993c1a942900a21aab5972969ef8831b6a1ff1f9b71557ffc
+    home: https://www.librechat.ai
+    icon: https://www.librechat.ai/librechat_alt.svg
+    name: librechat
+    type: application
+    urls:
+    - https://github.com/alienth/helm-charts/releases/download/librechat-1.8.12/librechat-1.8.12.tgz
+    version: 1.8.12
+  - apiVersion: v2
+    appVersion: v0.8.3-rc1
     created: "2026-02-24T05:53:05.447865527Z"
     dependencies:
     - condition: mongodb.enabled
@@ -222,4 +243,4 @@ entries:
     urls:
     - https://github.com/alienth/helm-charts/releases/download/linuxgsm-sdtd-0.0.1/linuxgsm-sdtd-0.0.1.tgz
     version: 0.0.1
-generated: "2026-02-24T05:53:05.447890183Z"
+generated: "2026-02-24T06:00:51.788825108Z"
