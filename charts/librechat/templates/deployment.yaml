@@ -33,6 +33,9 @@ spec:
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
+        {{ if .Values.sidecars }}
+        {{ .Values.sidecars | nindent 8 }}
+        {{ end }}
         - name: {{ include "librechat.fullname" $ }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
